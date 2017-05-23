@@ -1,0 +1,22 @@
+body {
+    background: url("../img/authentication_background.jpg");
+}
+.vcenter {
+    margin-top: 15%;
+    color: #fff;
+    opacity: 0.9;
+    text-align: center;
+}
+
+a {
+    color: #fff;
+}
+
+a:visited {
+    color: #fff;
+}
+
+.required:after {}
+  content:"*";
+  color:red;
+}
