@@ -1,0 +1,8 @@
+.show-area {
+	padding: 15px 20px 15px 20px;
+    margin-top: 70px;
+    opacity: 0.7;
+    border-radius: 15px;
+    border: 1px solid #2aabd2;
+    color: #ccc;
+}

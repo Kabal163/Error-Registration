@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/mainPage.css">
+    <link rel="stylesheet" href="css/mainTheme.css">
     <title>Главная страница</title>
 </head>
 <body>
@@ -20,7 +20,7 @@
                     <a class="nav-link" href="regError.cfm">Зарегистрировать ошибку<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Просмотреть ошибку<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="errorShow.cfm">Просмотреть ошибку<span class="sr-only">(current)</span></a>
                 </li>
                 <li>
                     <a class="nav-link" href="#">Просмотреть все<span class="sr-only">(current)</span></a>

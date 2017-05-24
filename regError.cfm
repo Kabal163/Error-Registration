@@ -1,6 +1,32 @@
-<cfquery name="statuses" datasource="errors">
-	SELECT * FROM status;
-</cfquery>
+<cfparam name="briefDesc" default="" >
+<cfparam name="fullDesc" default="" >
+<cfif isDefined("Form.briefDesc")>
+	<cfset briefDesc = #Form.briefDesc#>
+</cfif>
+<cfif isDefined("Form.fullDesc")>
+	<cfset fullDesc = #Form.fullDesc#>
+</cfif>
+<cfif isDefined("Form.status")>
+	<cfset statusId = #Form.status#>
+</cfif>
+<cfif isDefined("Form.timeBound")>
+	<cfset timeBoundId = #Form.timeBound#>
+</cfif>
+<cfif isDefined("Form.importance")>
+	<cfset importanceId = #Form.importance#>
+</cfif>
+<cfif isDefined("Form.user")>
+	<cfset userId = #Form.user#>
+	<cfquery name="errorReg" datasource="errors">
+		INSERT INTO error (brief_desc, full_desc, user_id, status_id, time_bound_id, importance_id)
+		VALUES (<cfqueryparam value="#briefDesc#" cfsqltype="cf_sql_varchar">
+			, <cfqueryparam value="#fullDesc#" cfsqltype="cf_sql_varchar">
+			, <cfqueryparam value="#userId#" cfsqltype="cf_sql_numeric">
+			, <cfqueryparam value="#statusId#" cfsqltype="cf_sql_numeric">
+			, <cfqueryparam value="#timeBoundId#" cfsqltype="cf_sql_numeric">
+			, <cfqueryparam value="#importanceId#" cfsqltype="cf_sql_numeric">);
+	</cfquery>	
+</cfif>	
 
 <!doctype html>
 <html>
@@ -24,7 +50,7 @@
                     <a class="nav-link" href="main.cfm">На главную<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Просмотреть ошибку<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="errorShow.cfm">Просмотреть ошибку<span class="sr-only">(current)</span></a>
                 </li>
                 <li>
                     <a class="nav-link" href="#">Просмотреть все<span class="sr-only">(current)</span></a>
@@ -40,13 +66,19 @@
         </div>
     </nav>
     <div class="container creation-holder">
-    	<form method="post" action="">
+    	<form id="form-error-reg" method="post" >
+    		<cfquery name="errorCriteria" datasource="errors">
+				select st.status_id, st.status_value, tb.time_bound_id, tb.time_bound_value, im.importance_id, im.importance_value
+				from status st
+				full outer join time_bound tb on st.status_id = tb.time_bound_id
+				full outer join importance im on st.status_id = im.importance_id;
+			</cfquery>
    			<table class="table">
    				<tr>
 	   				<td>Краткое описание</td>
 	   				<td>
 	   					<div class="form-group input-group">
-	   						<textarea class="blue-border form-control" name="brief-desc" cols="70" rows="3"></textarea>
+	   						<textarea class="blue-border form-control" name="briefDesc" cols="70" rows="3" required="required" ></textarea>
 	   					</div>
 	   				</td>
    				<tr>
@@ -54,7 +86,7 @@
 	   				<td>Подробное описание</td>
 	   				<td>
 	   					<div class="form-group">
-	   						<textarea class="blue-border form-control" name="full-desc" cols="70" rows="3"></textarea>
+	   						<textarea class="blue-border form-control" name="fullDesc" cols="70" rows="3"></textarea>
 	   					</div>
 	   				</td>
    				<tr>
@@ -62,7 +94,9 @@
 	   				<td>Пользователь</td>
 	   				<td>
 	   					<div class="form-group">
-	   						<input type="text" class="form-control blue-border" value="<cfoutput>#ListRest(GetAuthUser())#</cfoutput>" readonly/>
+	   						<input type="text" class="form-control blue-border" name="user" 
+	   							value="<cfoutput>#userId#</cfoutput>" 
+	   							placeholder="<cfoutput>#userFullName#</cfoutput>" readonly/>
 	   					</div>
 	   				</td>
    				<tr>	
@@ -71,14 +105,40 @@
 	   				<td>
 	   					<div class="form-group">
 	   						<select class="form-control" name="status">
-	   							<cfoutput query="statuses">
+	   							<cfoutput query="errorCriteria">
 	   								<option value="#status_id#">#status_value#</option>
 	   							</cfoutput>
 	   						</select>
 	   					</div>
 	   				</td>
    				<tr>
+   					<tr>
+	   				<td>Срочность</td>
+	   				<td>
+	   					<div class="form-group">
+	   						<select class="form-control" name="timeBound">
+	   							<cfoutput query="errorCriteria">
+	   								<option value="#time_bound_id#">#time_bound_value#</option>
+	   							</cfoutput>
+	   						</select>
+	   					</div>
+	   				</td>
+   				<tr>
+   					<tr>
+   					<tr>
+	   				<td>Критичность</td>
+	   				<td>
+	   					<div class="form-group">
+	   						<select class="form-control" name="importance">
+	   							<cfoutput query="errorCriteria">
+	   								<option value="#importance_id#">#importance_value#</option>
+	   							</cfoutput>
+	   						</select>
+	   					</div>
+	   				</td>
+   				<tr>
    			</table>
+   			<button type="submit" class="btn btn-success btn-block" onclick="sendErrorRegistration()">Зарегистрировать</button>
     	</form>
     </div>
     </div>

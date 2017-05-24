@@ -19,7 +19,7 @@
 			AND user_password = <cfqueryparam value="#Form.password#" cfsqltype="cf_sql_varchar">
 		</cfquery>	
 		<cfif userInfo.RecordCount EQ '1'>
-			<cfloginuser name="#userInfo.user_login#, #userInfo.user_first_name# #userInfo.user_last_name#" 
+			<cfloginuser name="#userInfo.user_login#, #userInfo.user_id#, #userInfo.user_first_name# #userInfo.user_last_name#" 
 			password="#userInfo.user_password#" roles="user">
 		<cfelse>
 			<cfset invalid = "yes">
@@ -28,5 +28,6 @@
 		</cfif>
 	</cfif>
 </cflogin>
-<cfset userId = ListFirst(GetAuthUser())>
-<cfset userFullName = ListRest(GetAuthUser())>
+<cfset userLogin = trim(ListFirst(GetAuthUser()))>
+<cfset userId = trim(ListGetAt(GetAuthUser(), 2))>
+<cfset userFullName = trim(ListGetAt(GetAuthUser(), 3))>
